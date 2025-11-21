@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta name="author" content="NextGenerationDev">
+   <title>Admin Dashboard - Atos Web Hosting</title>
+   <!--Favicon img-->
+   <link rel="shortcut icon" href="assets/img/favicon/favicon.png">
+   <!--Bootstrap min css-->
+   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+   <!--All min css-->
+   <link rel="stylesheet" href="assets/css/all.min.css">
+   <!--Main css-->
+   <link rel="stylesheet" href="assets/css/main.css">
+   <style>
+      /* Admin Dashboard Custom Styles */
+      :root {
+         --sidebar-bg: #231d70;
+         --primary-color: #0d4bbc;
+         --text-light: #666;
+         --border-color: #e9ecef;
+         --success-color: #28a745;
+         --warning-color: #ffc107;
+         --danger-color: #dc3545;
+      }
+
+      body.admin-body {
+         background-color: #f5f5f5;
+         overflow-x: hidden;
+      }
+
+      .admin-wrapper {
+         display: flex;
+         min-height: 100vh;
+      }
+
+      /* Sidebar Styles */
+      .admin-sidebar {
+         width: 250px;
+         background: var(--sidebar-bg);
+         color: white;
+         position: fixed;
+         left: 0;
+         top: 0;
+         height: 100vh;
+         overflow-y: auto;
+         z-index: 1000;
+         padding-top: 20px;
+      }
+
+      .admin-sidebar .logo {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         margin-bottom: 30px;
+         color: white;
+         text-decoration: none;
+      }
+
+      .admin-sidebar .logo img {
+         width: 80%;
+         height: auto;
+      }
+
+      .admin-sidebar .nav-item {
+         list-style: none;
+         margin-bottom: 0;
+      }
+
+      .admin-sidebar .nav-link {
+         color: rgba(255, 255, 255, 0.8);
+         padding: 12px 20px;
+         display: block;
+         text-decoration: none;
+         transition: all 0.3s ease;
+         border-left: 4px solid transparent;
+      }
+
+      .admin-sidebar .nav-link:hover,
+      .admin-sidebar .nav-link.active {
+         background: rgba(255, 255, 255, 0.1);
+         color: white;
+         border-left-color: #60d4e3;
+      }
+
+      .admin-sidebar .nav-link i {
+         margin-right: 10px;
+         width: 20px;
+      }
+
+      .admin-sidebar .nav-section-title {
+         color: rgba(255, 255, 255, 0.5);
+         font-size: 12px;
+         text-transform: uppercase;
+         letter-spacing: 1px;
+         padding: 15px 20px 10px;
+         margin-top: 10px;
+      }
+
+      /* Main Content Area */
+      .admin-main {
+         margin-left: 250px;
+         flex: 1;
+         display: flex;
+         flex-direction: column;
+      }
+
+      /* Admin Navbar */
+      .admin-navbar {
+         background: white;
+         padding: 15px 30px;
+         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+         position: sticky;
+         top: 0;
+         z-index: 900;
+      }
+
+      .admin-navbar .navbar-title {
+         font-size: 24px;
+         font-weight: 700;
+         color: var(--primary-color);
+         margin: 0;
+      }
+
+      .admin-navbar .navbar-actions {
+         display: flex;
+         gap: 20px;
+         align-items: center;
+      }
+
+      .admin-navbar .navbar-actions .btn-icon {
+         background: none;
+         border: none;
+         color: var(--text-light);
+         cursor: pointer;
+         font-size: 18px;
+         position: relative;
+      }
+
+      .admin-navbar .navbar-actions .btn-icon:hover {
+         color: var(--primary-color);
+      }
+
+      .admin-navbar .navbar-actions .badge {
+         position: absolute;
+         top: -5px;
+         right: -5px;
+         background: var(--danger-color);
+         color: white;
+         border-radius: 50%;
+         width: 20px;
+         height: 20px;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         font-size: 12px;
+      }
+
+      .admin-navbar .user-profile {
+         display: flex;
+         align-items: center;
+         gap: 10px;
+      }
+
+      .admin-navbar .user-avatar {
+         width: 40px;
+         height: 40px;
+         border-radius: 50%;
+         background: var(--primary-color);
+         color: white;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         font-weight: bold;
+      }
+
+      /* Content Area */
+      .admin-content {
+         padding: 30px;
+         flex: 1;
+         overflow-y: auto;
+      }
+
+      /* Breadcrumb */
+      .admin-breadcrumb {
+         margin-bottom: 30px;
+      }
+
+      .admin-breadcrumb ol {
+         background: white;
+         padding: 15px 20px;
+         border-radius: 5px;
+         margin: 0;
+      }
+
+      .admin-breadcrumb ol li {
+         color: var(--text-light);
+      }
+
+      .admin-breadcrumb ol li.active {
+         color: var(--primary-color);
+         font-weight: 600;
+      }
+
+      /* Dashboard Cards */
+      .admin-card {
+         background: white;
+         border-radius: 8px;
+         padding: 25px;
+         margin-bottom: 30px;
+         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+         transition: all 0.3s ease;
+      }
+
+      .admin-card:hover {
+         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      }
+
+      .admin-card h5 {
+         color: var(--primary-color);
+         margin-bottom: 20px;
+         font-weight: 700;
+      }
+
+      .stat-card {
+         text-align: center;
+         padding: 20px;
+      }
+
+      .stat-card .stat-icon {
+         font-size: 40px;
+         color: var(--primary-color);
+         margin-bottom: 10px;
+      }
+
+      .stat-card .stat-icon.success {
+         color: var(--success-color);
+      }
+
+      .stat-card .stat-icon.warning {
+         color: var(--warning-color);
+      }
+
+      .stat-card .stat-icon.danger {
+         color: var(--danger-color);
+      }
+
+      .stat-card .stat-number {
+         font-size: 28px;
+         font-weight: 700;
+         color: var(--primary-color);
+      }
+
+      .stat-card .stat-label {
+         color: var(--text-light);
+         font-size: 14px;
+         margin-top: 5px;
+      }
+
+      /* Table Styles */
+      .admin-table {
+         background: white;
+         border-radius: 8px;
+         overflow: hidden;
+         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+         margin-bottom: 30px;
+      }
+
+      .admin-table table {
+         margin: 0;
+      }
+
+      .admin-table thead {
+         background: #f8f9fa;
+         border-bottom: 2px solid var(--border-color);
+      }
+
+      .admin-table thead th {
+         color: var(--primary-color);
+         font-weight: 700;
+         padding: 15px;
+         border: none;
+      }
+
+      .admin-table tbody td {
+         padding: 15px;
+         vertical-align: middle;
+         border-bottom: 1px solid var(--border-color);
+      }
+
+      .admin-table tbody tr:hover {
+         background: #f8f9fa;
+      }
+
+      .admin-table .badge {
+         padding: 6px 12px;
+         border-radius: 20px;
+         font-size: 12px;
+         font-weight: 600;
+      }
+
+      .admin-table .badge-success {
+         background: rgba(40, 167, 69, 0.1);
+         color: var(--success-color);
+      }
+
+      .admin-table .badge-warning {
+         background: rgba(255, 193, 7, 0.1);
+         color: var(--warning-color);
+      }
+
+      .admin-table .badge-danger {
+         background: rgba(220, 53, 69, 0.1);
+         color: var(--danger-color);
+      }
+
+      .admin-table .action-buttons {
+         display: flex;
+         gap: 8px;
+      }
+
+      .admin-table .action-buttons a,
+      .admin-table .action-buttons button {
+         padding: 6px 12px;
+         border-radius: 4px;
+         border: none;
+         font-size: 12px;
+         cursor: pointer;
+         text-decoration: none;
+         transition: all 0.3s ease;
+      }
+
+      .admin-table .btn-edit {
+         background: rgba(13, 75, 188, 0.1);
+         color: var(--primary-color);
+      }
+
+      .admin-table .btn-edit:hover {
+         background: var(--primary-color);
+         color: white;
+      }
+
+      .admin-table .btn-delete {
+         background: rgba(220, 53, 69, 0.1);
+         color: var(--danger-color);
+      }
+
+      .admin-table .btn-delete:hover {
+         background: var(--danger-color);
+         color: white;
+      }
+
+      /* Form Styles */
+      .admin-form {
+         background: white;
+         padding: 25px;
+         border-radius: 8px;
+         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .admin-form .form-group {
+         margin-bottom: 20px;
+      }
+
+      .admin-form label {
+         color: var(--primary-color);
+         font-weight: 600;
+         margin-bottom: 8px;
+      }
+
+      .admin-form .form-control {
+         border: 1px solid var(--border-color);
+         padding: 10px 15px;
+         border-radius: 5px;
+         font-size: 14px;
+      }
+
+      .admin-form .form-control:focus {
+         border-color: var(--primary-color);
+         box-shadow: 0 0 0 0.2rem rgba(13, 75, 188, 0.25);
+      }
+
+      .admin-form .btn-submit {
+         background: var(--primary-color);
+         color: white;
+         padding: 10px 30px;
+         border: none;
+         border-radius: 5px;
+         cursor: pointer;
+         font-weight: 600;
+         transition: all 0.3s ease;
+      }
+
+      .admin-form .btn-submit:hover {
+         background: #0a3a8a;
+      }
+
+      /* Responsive - Mobile Menu Toggle */
+      .sidebar-toggle {
+         display: none;
+         background: none;
+         border: none;
+         color: var(--primary-color);
+         font-size: 24px;
+         cursor: pointer;
+         margin-right: 15px;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+         .admin-sidebar {
+            width: 100%;
+            height: auto;
+            position: relative;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+         }
+
+         .admin-sidebar.open {
+            max-height: 500px;
+         }
+
+         .admin-main {
+            margin-left: 0;
+         }
+
+         .sidebar-toggle {
+            display: block;
+         }
+
+         .admin-navbar {
+            padding: 12px 15px;
+         }
+
+         .admin-navbar .navbar-title {
+            font-size: 18px;
+         }
+
+         .admin-navbar .navbar-actions {
+            gap: 10px;
+         }
+
+         .admin-content {
+            padding: 15px;
+         }
+
+         .admin-card {
+            padding: 15px;
+         }
+
+         .stat-card .stat-number {
+            font-size: 20px;
+         }
+
+         .admin-table {
+            font-size: 12px;
+         }
+
+         .admin-table thead th,
+         .admin-table tbody td {
+            padding: 10px;
+         }
+
+         .admin-table .action-buttons {
+            flex-direction: column;
+            gap: 4px;
+         }
+      }
+   </style>
+</head>
+
+<body class="admin-body">
+
+<div class="admin-wrapper">
+
+   <!-- Sidebar Navigation -->
+   <aside class="admin-sidebar">
+      <a href="index.html" class="logo">
+         <img src="assets/img/logo/logo2.png" alt="Atos Logo">
+      </a>
+
+      <ul class="nav-list">
+         <li class="nav-section-title">Main</li>
+
+         <li class="nav-item">
+            <a href="#dashboard" class="nav-link active">
+               <i class="fas fa-chart-line"></i>
+               <span>Dashboard</span>
+            </a>
+         </li>
+
+         <li class="nav-item">
+            <a href="#orders" class="nav-link">
+               <i class="fas fa-shopping-cart"></i>
+               <span>Orders</span>
+            </a>
+         </li>
+
+         <li class="nav-item">
+            <a href="#clients" class="nav-link">
+               <i class="fas fa-users"></i>
+               <span>Clients</span>
+            </a>
+         </li>
+
+         <li class="nav-section-title">Services</li>
+
+         <li class="nav-item">
+            <a href="#hosting-plans" class="nav-link">
+               <i class="fas fa-server"></i>
+               <span>Hosting Plans</span>
+            </a>
+         </li>
+
+         <li class="nav-item">
+            <a href="#vps" class="nav-link">
+               <i class="fas fa-cloud"></i>
+               <span>VPS & Dedicated</span>
+            </a>
+         </li>
+
+         <li class="nav-item">
+            <a href="#rdp" class="nav-link">
+               <i class="fas fa-desktop"></i>
+               <span>RDP Services</span>
+            </a>
+         </li>
+
+         <li class="nav-section-title">Other</li>
+
+         <li class="nav-item">
+            <a href="#promos" class="nav-link">
+               <i class="fas fa-percentage"></i>
+               <span>Promotions</span>
+            </a>
+         </li>
+
+         <li class="nav-item">
+            <a href="index.html" class="nav-link" style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+               <i class="fas fa-sign-out-alt"></i>
+               <span>Back to Site</span>
+            </a>
+         </li>
+      </ul>
+   </aside>
+
+   <!-- Main Content -->
+   <div class="admin-main">
+
+      <!-- Admin Navbar -->
+      <nav class="admin-navbar">
+         <button class="sidebar-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+         </button>
+         <h1 class="navbar-title">Dashboard</h1>
+         <div class="navbar-actions">
+            <button class="btn-icon" title="Notifications">
+               <i class="fas fa-bell"></i>
+               <span class="badge">3</span>
+            </button>
+            <button class="btn-icon" title="Messages">
+               <i class="fas fa-envelope"></i>
+               <span class="badge">5</span>
+            </button>
+            <div class="user-profile">
+               <div class="user-avatar">A</div>
+               <span style="color: var(--text-light); font-size: 14px;">Admin</span>
+            </div>
+         </div>
+      </nav>
+
+      <!-- Content -->
+      <div class="admin-content">
+
+         <!-- Breadcrumb -->
+         <nav class="admin-breadcrumb">
+            <ol class="breadcrumb">
+               <li class="breadcrumb-item active">Dashboard</li>
+            </ol>
+         </nav>
+
+         <!-- Dashboard Stats -->
+         <div class="row g-4 mb-4">
+            <div class="col-xl-3 col-md-6">
+               <div class="admin-card stat-card">
+                  <div class="stat-icon">
+                     <i class="fas fa-shopping-cart"></i>
+                  </div>
+                  <div class="stat-number">1,245</div>
+                  <div class="stat-label">Total Orders</div>
+               </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+               <div class="admin-card stat-card">
+                  <div class="stat-icon success">
+                     <i class="fas fa-users"></i>
+                  </div>
+                  <div class="stat-number">892</div>
+                  <div class="stat-label">Active Clients</div>
+               </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+               <div class="admin-card stat-card">
+                  <div class="stat-icon warning">
+                     <i class="fas fa-server"></i>
+                  </div>
+                  <div class="stat-number">156</div>
+                  <div class="stat-label">Hosting Plans</div>
+               </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+               <div class="admin-card stat-card">
+                  <div class="stat-icon danger">
+                     <i class="fas fa-clock"></i>
+                  </div>
+                  <div class="stat-number">23</div>
+                  <div class="stat-label">Pending Tickets</div>
+               </div>
+            </div>
+         </div>
+
+         <!-- Recent Orders with Add-ons -->
+         <div class="admin-card">
+            <h5>Recent Orders & Add-ons</h5>
+            <div class="admin-table">
+               <table class="table table-hover mb-0">
+                  <thead>
+                     <tr>
+                        <th>Order ID</th>
+                        <th>Client Name</th>
+                        <th>Service</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Add-ons</th>
+                        <th>Actions</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr>
+                        <td>#ORD-001245</td>
+                        <td>John Smith</td>
+                        <td>VPS Hosting - Standard</td>
+                        <td>$29.99/mo</td>
+                        <td><span class="badge badge-success">Active</span></td>
+                        <td>
+                           <select style="padding: 5px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px;">
+                              <option>Select Add-on</option>
+                              <option>+2GB RAM ($5/mo)</option>
+                              <option>+1 CPU Core ($8/mo)</option>
+                              <option>+50GB Storage ($7/mo)</option>
+                              <option>+2TB Bandwidth ($10/mo)</option>
+                              <option>SSL Certificate ($3/mo)</option>
+                              <option>Daily Backup ($4/mo)</option>
+                           </select>
+                        </td>
+                        <td>
+                           <div class="action-buttons">
+                              <a href="#" class="btn-edit">Edit</a>
+                              <button class="btn-delete">Delete</button>
+                           </div>
+                        </td>
+                     </tr>
+                     <tr>
+                        <td>#ORD-001244</td>
+                        <td>Sarah Johnson</td>
+                        <td>Dedicated Server - Bud</td>
+                        <td>$29.99/mo<br><small style="color: #7a8a99;">₹1,860 EGP</small></td>
+                        <td><span class="badge badge-success">Active</span></td>
+                        <td>
+                           <select style="padding: 5px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px;">
+                              <option>Select Add-on</option>
+                              <option>+8GB RAM ($15/mo)</option>
+                              <option>+2 CPU Cores ($20/mo)</option>
+                              <option>+2TB Storage ($18/mo)</option>
+                              <option>+20TB Bandwidth ($25/mo)</option>
+                              <option>DDoS Protection ($30/mo)</option>
+                              <option>Private IP ($5/mo)</option>
+                           </select>
+                        </td>
+                        <td>
+                           <div class="action-buttons">
+                              <a href="#" class="btn-edit">Edit</a>
+                              <button class="btn-delete">Delete</button>
+                           </div>
+                        </td>
+                     </tr>
+                     <tr>
+                        <td>#ORD-001243</td>
+                        <td>Mike Wilson</td>
+                        <td>Cloud VPS - Professional</td>
+                        <td>$9.99/mo<br><small style="color: #7a8a99;">₹620 EGP</small></td>
+                        <td><span class="badge badge-warning">Pending</span></td>
+                        <td>
+                           <select style="padding: 5px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px;">
+                              <option>Select Add-on</option>
+                              <option>+4GB RAM ($12/mo)</option>
+                              <option>+100GB Storage ($8/mo)</option>
+                              <option>+5TB Bandwidth ($15/mo)</option>
+                              <option>Managed Backup ($6/mo)</option>
+                              <option>Email Hosting ($2/mo)</option>
+                           </select>
+                        </td>
+                        <td>
+                           <div class="action-buttons">
+                              <a href="#" class="btn-edit">Edit</a>
+                              <button class="btn-delete">Delete</button>
+                           </div>
+                        </td>
+                     </tr>
+                     <tr>
+                        <td>#ORD-001242</td>
+                        <td>Emma Brown</td>
+                        <td>RDP - Admin Encoding</td>
+                        <td>$19.99/mo</td>
+                        <td><span class="badge badge-danger">Cancelled</span></td>
+                        <td>
+                           <select style="padding: 5px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px;">
+                              <option>Select Add-on</option>
+                              <option>+4GB RAM ($8/mo)</option>
+                              <option>+100GB Storage ($10/mo)</option>
+                              <option>Priority Support ($5/mo)</option>
+                           </select>
+                        </td>
+                        <td>
+                           <div class="action-buttons">
+                              <a href="#" class="btn-edit">Edit</a>
+                              <button class="btn-delete">Delete</button>
+                           </div>
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+
+         <!-- Active Hosting Plans -->
+         <div class="admin-card">
+            <h5>Active Hosting Plans</h5>
+            <div class="admin-table">
+               <table class="table table-hover mb-0">
+                  <thead>
+                     <tr>
+                        <th>Plan Name</th>
+                        <th>Type</th>
+                        <th>Price</th>
+                        <th>Storage</th>
+                        <th>Bandwidth</th>
+                        <th>Active Users</th>
+                        <th>Actions</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr>
+                        <td>Basic VPS</td>
+                        <td>VPS Hosting</td>
+                        <td>$9.99/mo</td>
+                        <td>40 GB SSD</td>
+                        <td>2 TB</td>
+                        <td>45</td>
+                        <td>
+                           <div class="action-buttons">
+                              <a href="#" class="btn-edit">Edit</a>
+                              <button class="btn-delete">Delete</button>
+                           </div>
+                        </td>
+                     </tr>
+                     <tr>
+                        <td>Standard VPS</td>
+                        <td>VPS Hosting</td>
+                        <td>$29.99/mo</td>
+                        <td>80 GB NVMe</td>
+                        <td>5 TB</td>
+                        <td>128</td>
+                        <td>
+                           <div class="action-buttons">
+                              <a href="#" class="btn-edit">Edit</a>
+                              <button class="btn-delete">Delete</button>
+                           </div>
+                        </td>
+                     </tr>
+                     <tr>
+                        <td>Dedicated Server Bud</td>
+                        <td>Dedicated Hosting</td>
+                        <td>$29.99/mo<br><small style="color: #7a8a99;">₹1,860 EGP</small></td>
+                        <td>4x3TB SATA</td>
+                        <td>30 TB</td>
+                        <td>23</td>
+                        <td>
+                           <div class="action-buttons">
+                              <a href="#" class="btn-edit">Edit</a>
+                              <button class="btn-delete">Delete</button>
+                           </div>
+                        </td>
+                     </tr>
+                     <tr>
+                        <td>Cloud VPS India</td>
+                        <td>Cloud VPS</td>
+                        <td>$14.99/mo<br><small style="color: #7a8a99;">₹930 EGP</small></td>
+                        <td>40 GB SSD</td>
+                        <td>2 TB</td>
+                        <td>67</td>
+                        <td>
+                           <div class="action-buttons">
+                              <a href="#" class="btn-edit">Edit</a>
+                              <button class="btn-delete">Delete</button>
+                           </div>
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+                  <!-- Add New Plan Form -->
+         <div class="admin-card">
+            <h5>Add New Hosting Plan</h5>
+            <form class="admin-form">
+               <div class="row">
+                  <div class="col-md-6">
+                     <div class="form-group">
+                        <label for="planName">Plan Name</label>
+                        <input type="text" class="form-control" id="planName" placeholder="e.g., Professional VPS">
+                     </div>
+                  </div>
+                  <div class="col-md-6">
+                     <div class="form-group">
+                        <label for="planType">Plan Type</label>
+                        <select class="form-control" id="planType">
+                           <option>Select Type</option>
+                           <option>VPS Hosting</option>
+                           <option>Dedicated Server</option>
+                           <option>Cloud VPS</option>
+                           <option>RDP Services</option>
+                        </select>
+                     </div>
+                  </div>
+               <div class="row">
+                  <div class="col-md-6">
+                     <div class="form-group">
+                        <label for="planPrice">Price</label>
+                        <input type="text" class="form-control" id="planPrice" placeholder="e.g., $29.99/mo">
+                     </div>
+                  </div>
+                  <div class="col-md-6">
+                     <div class="form-group">
+                        <label for="planStorage">Storage</label>
+                        <input type="text" class="form-control" id="planStorage" placeholder="e.g., 80 GB SSD">
+                     </div>
+                  </div>
+               </div>
+
+               <div class="row">
+                  <div class="col-md-6">
+                     <div class="form-group">
+                        <label for="planBandwidth">Bandwidth</label>
+                        <input type="text" class="form-control" id="planBandwidth" placeholder="e.g., 5 TB">
+                     </div>
+                  </div>
+                  <div class="col-md-6">
+                     <div class="form-group">
+                        <label for="planFeatures">Features</label>
+                        <textarea class="form-control" id="planFeatures" placeholder="Enter features separated by commas" rows="3"></textarea>
+                     </div>
+                  </div>
+               </div>
+
+               <div class="row">
+                  <div class="col-12">
+                     <div class="form-group">
+                        <label for="planDescription">Description</label>
+                        <textarea class="form-control" id="planDescription" placeholder="Enter plan description" rows="4"></textarea>
+                     </div>
+                  </div>
+               </div>
+
+               <button type="submit" class="btn-submit">Add Plan</button>
+            </form>
+         </div>
+
+      </div>
+
+
+         <!-- Quick Actions -->
+         <div class="admin-card">
+            <h5>Quick Actions</h5>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+               <a href="#" class="btn-submit" style="padding: 10px 20px; margin: 0; text-decoration: none; display: inline-block;">+ Add New Order</a>
+               <a href="#" class="btn-submit" style="padding: 10px 20px; margin: 0; text-decoration: none; display: inline-block;">+ Add New Plan</a>
+               <a href="#" class="btn-submit" style="padding: 10px 20px; margin: 0; text-decoration: none; display: inline-block;">+ Add New Client</a>
+            </div>
+         </div>
+
+      </div>
+
+   </div>
+
+</div>
+
+<!-- Scripts -->
+<script src="assets/js/jquery-3.6.0.min.js"></script>
+<script src="assets/js/bootstrap.bundle.js"></script>
+
+<script>
+   // Toggle Sidebar on Mobile
+   function toggleSidebar() {
+      const sidebar = document.querySelector('.admin-sidebar');
+      sidebar.classList.toggle('open');
+   }
+
+   // Sidebar Navigation Active State
+   document.querySelectorAll('.admin-sidebar .nav-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+         document.querySelectorAll('.admin-sidebar .nav-link').forEach(l => l.classList.remove('active'));
+         this.classList.add('active');
+      });
+   });
+
+   // Close sidebar when clicking outside on mobile
+   document.addEventListener('click', function(e) {
+      const sidebar = document.querySelector('.admin-sidebar');
+      const toggle = document.querySelector('.sidebar-toggle');
+      if (window.innerWidth <= 768) {
+         if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+            sidebar.classList.remove('open');
+         }
+      }
+   });
+
+   // Basic form validation
+   document.querySelector('.admin-form')?.addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Plan added successfully! (This is a placeholder - integrate with backend)');
+      this.reset();
+   });
+
+   // Delete button action
+   document.querySelectorAll('.btn-delete').forEach(btn => {
+      btn.addEventListener('click', function() {
+         if (confirm('Are you sure you want to delete this item?')) {
+            this.closest('tr').style.display = 'none';
+            alert('Item deleted! (This is a placeholder - integrate with backend)');
+         }
+      });
+   });
+</script>
+
+</body>
+
+</html>
